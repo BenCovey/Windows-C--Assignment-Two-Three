@@ -1,0 +1,66 @@
+﻿<Page
+    x:Class="NamedayDemo.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NamedayDemo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" Width="873">
+    <Page.Resources>
+        <DataTemplate x:Key="NotesTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding ID, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock Text="{Binding Title, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="180"/>
+            </StackPanel>
+        </DataTemplate>
+    </Page.Resources>
+    <Page.TopAppBar>
+        <CommandBar>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="About" Label="About" Click="AboutApp"/>
+                <AppBarButton x:Name="Exit" Label="Exit" Click="ExitApp" />
+            </CommandBar.SecondaryCommands>
+            <CommandBar.Content>
+                <AppBarButton Label="{Binding CommandTitle2}" Width="100"/>
+            </CommandBar.Content>
+            <AppBarButton Label="{Binding CommandTitle}" Width="150"/>
+            <AppBarButton x:Name="btnAdd" Icon="Add" Label="Add"  Click="AddNote"/>
+            <AppBarButton x:Name="btnEdit" Icon="Edit" Label="Edit" Click="EditNote"/>
+            <AppBarButton x:Name="btnSave" Icon="Save" Label="Save" Click="SaveNote"/>
+            <AppBarSeparator d:LayoutOverrides="Width, Height"/>
+            <AppBarButton x:Name="btnDelete" Icon="Delete" Label="Delete" Click="DeleteNote"/>
+
+        </CommandBar>
+    </Page.TopAppBar>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.DataContext>
+            <local:MainPageData/>
+        </Grid.DataContext>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid HorizontalAlignment="Left" Width="320">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="56"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBox x:Name="textBox" TextWrapping="Wrap" Text="TextBox" Height="10" Margin="0,0,10,632" Grid.Row="1" HorizontalAlignment="Right" Width="300" VerticalAlignment="Bottom"/>
+            <ListView x:Name="listView" ItemTemplate="{StaticResource NotesTemplate}" ItemsSource="{Binding NoteModel, Mode =TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" Margin="0,0,0,84" HorizontalAlignment="Right" Width="320" Height="490" VerticalAlignment="Bottom"/>
+        </Grid>
+        <Grid Grid.Column="1" Margin="0,56,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition  Height="Auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBox x:Name="Content" TextWrapping="Wrap" Text="{Binding Content}" Margin="0,0,0,-22" Grid.Row="1" Height="564" VerticalAlignment="Top"/>
+            <TextBox x:Name="Title" HorizontalAlignment="Left" Text="{Binding Greeting}" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="533"/>
+
+        </Grid>
+
+    </Grid>
+
+</Page>
+
+

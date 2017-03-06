@@ -5,7 +5,9 @@
     xmlns:local="using:NamedayDemo"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Width="873">
+    mc:Ignorable="d" Width="873" Margin="0,35,0,-35"
+    MinHeight="700">
+    
     <Page.Resources>
         <DataTemplate x:Key="NotesTemplate">
             <StackPanel Orientation="Horizontal">
@@ -41,26 +43,32 @@
             <ColumnDefinition Width="320"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Grid HorizontalAlignment="Left" Width="320" Margin="0,0,0,-35" Height="640" VerticalAlignment="Bottom">
+        <Grid HorizontalAlignment="Left" Width="320" Margin="0,0,0,-35" Height="640" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="129*"/>
                 <ColumnDefinition Width="191*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="56"/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
-            <TextBox x:Name="Search" TextWrapping="Wrap" Text="TextBox" Height="10" Margin="0,-24,10,48" HorizontalAlignment="Right" Width="300" VerticalAlignment="Bottom" Grid.ColumnSpan="2" TextChanged="Search_TextChanged" DoubleTapped="Search_DoubleTapped" PointerPressed="Search_PointerPressed"/>
-            <ListView x:Name="listView" ItemTemplate="{StaticResource NotesTemplate}" ItemsSource="{Binding FilterNotes, Mode =TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" Margin="0,0,0,84" HorizontalAlignment="Right" Width="320" Height="490" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+            <TextBox x:Name="Search" TextWrapping="Wrap" Text="TextBox" Height="32" Margin="0,0,10,48" HorizontalAlignment="Right" Width="300" VerticalAlignment="Bottom" Grid.ColumnSpan="2" TextChanged="Search_TextChanged" DoubleTapped="Search_DoubleTapped" PointerPressed="Search_PointerPressed"/>
+            <ListView x:Name="listView" ItemTemplate="{StaticResource NotesTemplate}" ItemsSource="{Binding FilterNotes, Mode =TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" Margin="0,0,0,84" HorizontalAlignment="Right" Width="320" Height="490" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Grid.RowSpan="2"/>
         </Grid>
         <Grid Grid.Column="1" Margin="0,56,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition  Height="Auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBox x:Name="Content" TextWrapping="Wrap" Text="{Binding Content}" Margin="0,0,0,-22" Grid.Row="1" Height="564" VerticalAlignment="Top"/>
-            <TextBox x:Name="Title" HorizontalAlignment="Left" Text="{Binding Greeting}" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="533"/>
+            <Grid>
+                <StackPanel Margin="0,-31,0,31">
+                    <TextBox x:Name="Title" HorizontalAlignment="Left" Text="{Binding Greeting}" TextWrapping="Wrap" VerticalAlignment="Top" Width="533" Margin="10,0,5,15"/>
+                    <TextBox x:Name="Content" TextWrapping="Wrap" Text="{Binding Content}" Height="393"  VerticalAlignment="Top"/>
 
+
+                    
+                </StackPanel>
+            </Grid>
         </Grid>
 
     </Grid>

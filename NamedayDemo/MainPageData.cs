@@ -31,12 +31,6 @@ namespace NamedayDemo
 
         public  event PropertyChangedEventHandler PropertyChanged;
 
-        public void update()
-        {
-            PropertyChanged?.Invoke(this,
-                    new PropertyChangedEventArgs("NoteModel"));
-        }
-
         public  NotesModel SelectedNote
         {
             get
@@ -82,8 +76,7 @@ namespace NamedayDemo
                     int id = NoteModel.Count;
                     id++;
                     NoteModel.Add(new NotesModel(id, title, text));
-
-                    //FilterNotes.Add(new NotesModel(id, title, text));
+                    FilterNotes.Add(new NotesModel(id, title, text));
                 }
                 catch (Exception err) {
                     string error = err.Message;
@@ -129,6 +122,7 @@ namespace NamedayDemo
         {
             int Id = Convert.ToInt32(NoteModel.LongCount()) + 1;
             NoteModel.Add(new NotesModel(Id, title, content));
+            FilterNotes.Add(new NotesModel(Id, title, content));
             //title = title + ".txt";
             SaveNew(title, content);
             
@@ -145,17 +139,13 @@ namespace NamedayDemo
             await sFile.DeleteAsync();
             
             NoteModel.RemoveAt(Id);
+            FilterNotes.RemoveAt(Id);
             //refillList();
 
 
         }
 
-        public async static void refillList()
-        {
-            NoteModel.Clear();
-            fillList();
 
-        }
 
         private void PerformFiltering()
         {
@@ -191,16 +181,12 @@ namespace NamedayDemo
 
         public MainPageData()
         {
+
             CheckCommand v = new CheckCommand(this);
             NoteModel = new ObservableCollection<NotesModel>();
-            //for (int i = 1; i <= 5; i++)
-            //{
-            //    string Title = "Title goes here " + i;
-            //    string Body = "Body goes here " + i;
-            //    NoteModel.Add(new NotesModel(id,Title, Body));
-            //    id++;
-            //}
-            
+            FilterNotes = new ObservableCollection<NotesModel>();
+
+
             fillList();
 
 

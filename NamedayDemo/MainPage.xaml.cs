@@ -200,5 +200,38 @@ namespace NamedayDemo
             else
                 return "";
         }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            
+        }
+
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string text = Search.Text;
+            if (text != "")
+            {
+                MainPageData.PerformFiltering(text);
+            }else
+            {
+                MainPageData.ShowAll();
+            }
+        }
+
+        private void Search_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            Search.Text = "";
+        }
+
+        private void Search_DoubleTapped(object sender, RoutedEventArgs e)
+        {
+            Search.Text = "";
+        }
+
+        private void Search_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            Search.Text = "";
+
+        }
     }
 }

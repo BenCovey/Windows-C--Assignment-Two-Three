@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Popups;
 
 namespace NamedayDemo
 {
@@ -54,9 +55,7 @@ namespace NamedayDemo
                 PropertyChanged?.Invoke(this,
                     new PropertyChangedEventArgs("Content"));
                 PropertyChanged?.Invoke(this,
-                    new PropertyChangedEventArgs("NotesTemplate"));
-                PropertyChanged?.Invoke(this,
-                    new PropertyChangedEventArgs("NoteModel"));
+                    new PropertyChangedEventArgs("FilterNotes"));
                 //CheckCommand.FireCanExecuteChanged();
             }
         }
@@ -81,8 +80,6 @@ namespace NamedayDemo
                 catch (Exception err) {
                     string error = err.Message;
                 }
-                
-
             }
 
         }
@@ -118,14 +115,37 @@ namespace NamedayDemo
 
         }
 
-        public static void AddNewNote(string title, string content)
+        public static async void  AddNewNote(string title, string content)
         {
-            int Id = Convert.ToInt32(NoteModel.LongCount()) + 1;
-            NoteModel.Add(new NotesModel(Id, title, content));
-            FilterNotes.Add(new NotesModel(Id, title, content));
-            //title = title + ".txt";
-            SaveNew(title, content);
-            
+            var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+            var query = folder.CreateFileQuery();
+            var files = await query.GetFilesAsync();
+            Boolean samename = false;
+            foreach (Windows.Storage.StorageFile file in files)
+            {
+                string filetitle = file.Name;
+                filetitle = filetitle.Replace(".txt", "");
+                if(filetitle.Equals(title))
+                {
+                    samename = true;
+                    var OkCommand = new UICommand("Ok");
+                    var dialog = new MessageDialog("Name already used. Please pick another", "Invalid Title");
+                    dialog.Options = MessageDialogOptions.None;
+                    dialog.Commands.Add(OkCommand);
+                    dialog.DefaultCommandIndex = 0;
+                    dialog.CancelCommandIndex = 0;
+                    
+                }
+            }
+            if (samename != true)
+            {
+                int Id = Convert.ToInt32(NoteModel.LongCount()) + 1;
+                NoteModel.Add(new NotesModel(Id, title, content));
+                FilterNotes.Add(new NotesModel(Id, title, content));
+                //title = title + ".txt";
+                SaveNew(title, content);
+            }
+
             //_selectedNote = NoteModel[Id];
         }
 
@@ -145,37 +165,67 @@ namespace NamedayDemo
 
         }
 
-
-
-        private void PerformFiltering()
+        public static void ShowAll()
         {
-            string _filter = "";
-            if (_filter == null)
-                _filter = "";
-
-            string Filter = null;
-            var lowerCaseFilter = Filter.ToLowerInvariant().Trim();
-
-            var result =
-                NoteModel.Where(d => d.Title.ToLowerInvariant()
-                .Contains(lowerCaseFilter))
-                .ToList();
-
-            var toRemove = FilterNotes.Except(result).ToList();
-
-            foreach (var x in toRemove)
-                FilterNotes.Remove(x);
-
-            var resultCount = result.Count;
-            for (int i = 0; i < resultCount; i++)
+            FilterNotes.Clear();
+            foreach (NotesModel note in NoteModel)
             {
-                var resultItem = result[i];
-                if (i + 1 > FilterNotes.Count || !FilterNotes[i].Equals(resultItem))
-                    FilterNotes.Insert(i, resultItem);
+                FilterNotes.Add(note);
             }
         }
 
+        public static void PerformFiltering(string Filter)
+        {
+            if (Filter.Trim() == null || Filter.Equals(""))
+            {
+                FilterNotes.Clear();
+                foreach (NotesModel note in NoteModel)
+                {
+                    FilterNotes.Add(note);
+                }
 
+            }
+            else
+            {
+                var lowerCaseFilter = Filter.ToLowerInvariant().Trim();
+
+                var result =
+                    NoteModel.Where(d => d.Title.ToLowerInvariant()
+                    .Contains(lowerCaseFilter))
+                    .ToList();
+
+                var toRemove = FilterNotes.Except(result).ToList();
+
+                foreach (var x in toRemove)
+                    FilterNotes.Remove(x);
+
+                var resultCount = result.Count;
+                for (int i = 0; i < resultCount; i++)
+                {
+                    var resultItem = result[i];
+                    if (i + 1 > FilterNotes.Count || !FilterNotes[i].Equals(resultItem))
+                        FilterNotes.Insert(i, resultItem);
+                }
+            }
+        }
+
+        //    FilterNotes.Clear();
+        //    try
+        //    {
+        //        foreach (NotesModel note in NoteModel)
+        //        {
+        //            for (int i = 0; i < results.Count; i++)
+        //            {
+        //                int id = results[i];
+        //                if (note.ID != id)
+        //                {
+        //                    FilterNotes.Add(NoteModel[id]);
+        //                }//end if
+        //            }//end for
+        //        }//end foreach
+        //    }
+        //    catch (Exception) { }
+        //}//end filtering
 
         public CheckCommand CheckCommand { get; }
 
@@ -185,12 +235,8 @@ namespace NamedayDemo
             CheckCommand v = new CheckCommand(this);
             NoteModel = new ObservableCollection<NotesModel>();
             FilterNotes = new ObservableCollection<NotesModel>();
-
-
             fillList();
-
-
-
+            //PerformFiltering();
         }
     }
 
